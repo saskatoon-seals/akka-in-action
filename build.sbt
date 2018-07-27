@@ -12,6 +12,8 @@ resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repos
 
 addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.3")
 
+libraryDependencies +=  "org.scalaj" %% "scalaj-http" % "2.4.0"
+
 // https://mvnrepository.com/artifact/org.clojars.mmcgrana/java-beanstalk-client
 //libraryDependencies += "org.clojars.mmcgrana" % "java-beanstalk-client" % "1.4.4"
 
