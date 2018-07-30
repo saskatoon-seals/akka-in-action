@@ -10,7 +10,7 @@ object FileSaveServer {
 
   def main(args: Array[String]) {
     val server = HttpServer.create(new InetSocketAddress(8000), 0)
-    server.createContext("/", new SaveFile())
+    server.createContext("/upload", new SaveFileHandler())
     server.setExecutor(null)
 
     server.start()
@@ -23,20 +23,37 @@ object FileSaveServer {
 
 }
 
-class SaveFile extends HttpHandler {
+class SaveFileHandler extends HttpHandler {
 
   def handle(t: HttpExchange) {
-    displayPayload(t.getRequestBody)
+    val query: String = t.getRequestURI.getQuery
+
+    saveFile(
+      toDestinationUri(
+        extractQueryParam(query, "dest_path"),
+        extractQueryParam(query, "file_name")
+      ),
+      t.getRequestBody
+    )
+
     sendResponse(t)
   }
 
-  private def displayPayload(body: InputStream): Unit ={
+  private def toDestinationUri(destPath: String, fileName: String) =
+    destPath + (if (destPath.endsWith("/")) "" else "/") + fileName
+
+  private def extractQueryParam(query: String, param: String): String = query
+    .substring(query.indexOf(param))
+    .split("=")(1)
+    .split("&")(0)
+
+  private def saveFile(destUri: String, body: InputStream): Unit ={
     println()
     println("******************** REQUEST START ********************")
     println()
     copyStream(
       body,
-      new FileOutputStream(FileSaveServer.outputFileUri)
+      new FileOutputStream(destUri)
     )
     println()
     println("********************* REQUEST END *********************")
