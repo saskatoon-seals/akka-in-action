@@ -1,4 +1,4 @@
-# Akka in Action
+# Scala in Action
 
 Scala repository dedicated to:
  - Small coding exercises (e.g. codewars, codility)
