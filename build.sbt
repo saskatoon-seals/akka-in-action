@@ -1,34 +1,38 @@
+//---------------------------general project config---------------------------------
+
 name := "akka-in-action"
 
 version := "0.1"
 
 scalaVersion := "2.12.6"
 
-
 scalaSource in Compile := baseDirectory.value / "src"
-
 scalaSource in Test := baseDirectory.value / "test"
 
-
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+//------------------------------------resolvers-------------------------------------
 
 resolvers += "Artima Maven Repository" at "http://repo.artima.com/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers += Classpaths.typesafeReleases
 
-addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.3")
+//addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.3")
+
+//---------------------------library dependencies------------------------------------
 
 libraryDependencies +=  "org.scalaj" %% "scalaj-http" % "2.4.0"
 
-// https://mvnrepository.com/artifact/org.clojars.mmcgrana/java-beanstalk-client
-//libraryDependencies += "org.clojars.mmcgrana" % "java-beanstalk-client" % "1.4.4"
+libraryDependencies ++= {
+  val akkaVersion = "2.4.19"
+  Seq(
+    "com.typesafe.akka"       %%  "akka-actor"   % akkaVersion,
+    "com.typesafe.akka"       %%  "akka-slf4j"   % akkaVersion,
+    "com.typesafe.akka"       %%  "akka-testkit" % akkaVersion   % "test",
+    "org.scalatest"           %%  "scalatest"    % "3.0.0"       % "test"
+  )
+}
 
-/*
-// https://mvnrepository.com/artifact/org.scalaz/scalaz-core
-libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.3.0-M24"
-// https://mvnrepository.com/artifact/org.scalaz/scalaz-ioeffect
-libraryDependencies += "org.scalaz" %% "scalaz-ioeffect" % "2.10.1"
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-http" % "10.1.3",
+  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.3" % Test
+)
 
-// https://mvnrepository.com/artifact/org.mockito/mockito-core
-libraryDependencies += "org.mockito" % "mockito-core" % "2.19.1" % Test
-*/
