@@ -1,8 +1,7 @@
-package akkainaction.fileupload
+package akkainaction.fileupload.parallel
 
-import akka.actor.{Actor}
-
-import Protocol._
+import akka.actor.Actor
+import akkainaction.fileupload.Protocol._
 
 class Dispatcher extends Actor {
   override def receive: Receive = {
@@ -10,7 +9,12 @@ class Dispatcher extends Actor {
       case Some(_) => ??? //TODO: Re-queue the message
 
       //creates an actor and sends it a message to start doing the work
-      case None => context.actorOf(Worker.props(fileUri), fileUri) ! Start
+      case None => {
+        val worker = context.actorOf(Worker.props(fileUri), fileUri)
+        worker ! Start
+
+        sender() ! UploadStarted(fileUri)
+      }
     }
 
     //sends message to a child actor if it exists
