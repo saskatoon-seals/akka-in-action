@@ -14,7 +14,7 @@ class Controller(filesUploader: ActorRef, timeout: Timeout, executor: ExecutionC
   implicit def executionContext = executor
 
   override def receive: Receive = {
-    case Upload(fileUri) => (filesUploader ? IsUploading(fileUri)) //ask == '?'
+    case Upload(0, fileUri) => (filesUploader ? IsUploading(fileUri)) //ask == '?'
       .mapTo[Boolean]
       .foreach(isUploading => {
         if (isUploading)
@@ -24,7 +24,7 @@ class Controller(filesUploader: ActorRef, timeout: Timeout, executor: ExecutionC
       })
 
     //sends message to a child actor if it exists
-    case Cancel(fileUri) => filesUploader ! Cancel(fileUri)
+    case Cancel(0, fileUri) => filesUploader ! Cancel(0, fileUri)
 
     case msg: Delete => ??? //TODO: Forward to archive-mgrd
   }

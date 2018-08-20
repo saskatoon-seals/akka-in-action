@@ -7,6 +7,8 @@ import akkainaction.tdd.StopSystemAfterAll
 import org.scalatest.{MustMatchers, WordSpecLike}
 import akkainaction.fileupload.Protocol._
 
+import scala.util.Random
+
 class ParallelUploadsSuite extends TestKit(ActorSystem("testsystem"))
   with WordSpecLike
   with MustMatchers
@@ -18,8 +20,9 @@ class ParallelUploadsSuite extends TestKit(ActorSystem("testsystem"))
   "The dispatcher" must {
     "create a worker actor and send it a start msg on request for a new file upload" in {
       val dispatcher = system.actorOf(Props[Dispatcher], "dispatcher")
+      val jobId = Random.nextInt()
 
-      dispatcher ! Upload(uri)
+      dispatcher ! Upload(jobId, uri)
 
       expectMsg(UploadStarted(uri))
 
