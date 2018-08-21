@@ -24,7 +24,7 @@ class FilesUploader extends Actor {
     }
 
     //fileUri the worker is uploading is not it's state - worker may be uploading multiple files
-    case Cancel(fileUri) => self ! Continue(fileUri, null, 0, 0, true)
+    case Cancel(0, fileUri) => self ! Continue(fileUri, null, 0, 0, true)
 
     //Problem: method has a side-effect of uploading a file
     case Continue(fileUri, source, offset, sizeDelta, stop) => {
