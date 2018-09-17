@@ -36,3 +36,4 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-testkit" % "10.1.3" % Test
 )
 
+libraryDependencies += "redis.clients" % "jedis" % "2.9.0"

@@ -1,0 +1,29 @@
+DESIGN NOTES:
+
+Both ConfigApplier, DeltaActor and TargetStateActor are completely event driven:
+ - There are no blocking calls for writes (state changing events) involved.
+ - Queries are blocking (done via RPC) because responses should be fast.
+
+State ownership in the system:
+ - TargetStateActor and ConfigApplier have states which are also stored in persistent.
+ - ConfigApplier is the owner of current state.
+ - DeltaActor is stateless
+
+Description of events:
+ - Events for TargetStateActor are external - XML user request.
+ - Events for DeltaActor are internal and external. They come from TargetStateActor
+   (external - on every user XML request) and from ConfigApplier (internal - every time
+   after a cycle of of applying settings finishes (done applying)).
+ - Events for ConfigApplier are all coming from DeltaActor and are both internal
+   (target state wasn't fully applied due to failures so delta was > 0 or target state
+   was fully applied but meanwhile a new user XML request arrived) and external
+   (new user XML request arriving while the applier is idle)
+
+Failures handling:
+ - Each actor restarts on a failure.
+ - Most important and common restarts - which are also anticipated - will be by ConfigApplier.
+   ConfigApplier has a set of responsibilities when it comes up:
+    - reads current state from persistent
+    - sends it to DeltaActor
+ - The creator of all three actors will provide the supervision strategy (restarts) and
+   monitoring (logging restarts, failures)
